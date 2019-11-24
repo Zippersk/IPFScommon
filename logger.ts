@@ -1,4 +1,6 @@
 import winston from "winston";
+import { config } from "dotenv";
+config()
 
 const options: winston.LoggerOptions = {
     transports: [

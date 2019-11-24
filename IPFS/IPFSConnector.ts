@@ -2,10 +2,14 @@ import IPFS from "typestub-ipfs";
 import ipfsDefaultConfig from "./ipfsDefaultConfig"
 import logger from '../logger';
 
-export class IPFSconnector {
+export default class IPFSconnector {
     private static instance: IPFSconnector;
     private static config: object = ipfsDefaultConfig;
     private node: IPFS;
+
+    static setConfig(config: object) {
+        IPFSconnector.config = config
+    }
 
     static async getInstanceAsync() {
         if (!IPFSconnector.instance) {
@@ -18,11 +22,8 @@ export class IPFSconnector {
         return IPFSconnector.instance;
     }
 
-    public async dagPutAsync(data: any) {
-        return await this.node.dag.put(data, {
-            format: 297,
-            hashAlg: 'sha2-256'
-        })
+    public getNode() {
+        return this.node
     }
 
     public shutDown() {

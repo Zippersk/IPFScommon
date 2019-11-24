@@ -100,3 +100,5 @@ export default {
   deserialize: deserialize,
   serialize: serialize
 }
+
+export {hashToCid}
