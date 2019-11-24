@@ -1,4 +1,4 @@
-class Block {
+export class Block {
     constructor() {
         
     }
