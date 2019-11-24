@@ -6,7 +6,7 @@ import IPFS from "ipfs";
 export default class IPFSconnector {
     private static instance: IPFSconnector;
     private static config: object = ipfsDefaultConfig;
-    private node: IPFStype;
+    private node: any;
 
     static setConfig(config: object) {
         IPFSconnector.config = config;
@@ -18,6 +18,27 @@ export default class IPFSconnector {
 
             IPFSconnector.instance.node = await IPFS.create(IPFSconnector.config);
             logger.info("node started!");
+
+            setInterval(async () => {
+                try {
+                    const peers = await IPFSconnector.instance.node.swarm.peers()
+                    console.log(`The node now has ${peers.length} peers.`)
+                } catch (err) {
+                    console.log('An error occurred trying to check our peers:', err)
+                }
+            }, 2000)
+            
+            // Log out the bandwidth stats every 4 seconds so we can see how our configuration is doing
+            setInterval(async () => {
+                try {
+                    const stats = await IPFSconnector.instance.node.stats.bw()
+                    console.log(`\nBandwidth Stats: ${JSON.stringify(stats, null, 2)}\n`)
+                } catch (err) {
+                    console.log('An error occurred trying to check our stats:', err)
+                }
+            }, 4000)
+        
+
         }
         return IPFSconnector.instance;
     }
