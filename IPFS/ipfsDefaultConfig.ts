@@ -1,8 +1,11 @@
 import os from "os";
 import fs from "fs";
+import path from "path"
 import Protector from "libp2p-pnet";
 
-const swarmKeyPath = "../swarm.key";
+const swarmKeyPath = path.resolve(__dirname, "../swarm.key");
+
+let tets = fs.existsSync(swarmKeyPath);
 
 export default {
     repo: os.homedir() + "/.ipfs",
