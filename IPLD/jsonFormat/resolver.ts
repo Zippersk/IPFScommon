@@ -1,5 +1,5 @@
 import CID from 'cids'
-const util = require('./util')
+import util from './util'
 
 /**
  * Resolves a path within a Bitcoin block.
@@ -15,7 +15,7 @@ const util = require('./util')
  *   link, then the `remainderPath` is the part after the link that can be used
  *   for further resolving
  */
-exports.resolve = (binaryBlob, path) => {
+const resolve = (binaryBlob, path) => {
   let node = util.deserialize(binaryBlob)
 
   const parts = path.split('/').filter(Boolean)
@@ -60,8 +60,13 @@ const traverse = function * (node, path) {
  * @param {Buffer} binaryBlob - Binary representation of a Bitcoin block
  * @yields {string} - A single path
  */
-exports.tree = function * (binaryBlob) {
+const tree = function * (binaryBlob) {
   const node = util.deserialize(binaryBlob)
 
   yield * traverse(node, undefined)
+}
+
+export default {
+  traverse,
+  tree
 }

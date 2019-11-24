@@ -1,18 +1,19 @@
 import IPFS from "typestub-ipfs";
-const os = require('os')
+import ipfsDefaultConfig from "./ipfsDefaultConfig"
+import logger from '../logger';
 
 export class IPFSconnector {
     private static instance: IPFSconnector;
+    private static config: object = ipfsDefaultConfig;
     private node: IPFS;
-    private constructor() { 
-        // do something construct...
-    }
+
     static async getInstanceAsync() {
         if (!IPFSconnector.instance) {
             IPFSconnector.instance = new IPFSconnector();
             const IPFSc = require('ipfs')
 
-            IPFSconnector.instance.node = await IPFSc.create(ipfsConfig)
+            IPFSconnector.instance.node = await IPFSc.create(IPFSconnector.config)
+            logger.info("node started!")
         }
         return IPFSconnector.instance;
     }
@@ -27,27 +28,11 @@ export class IPFSconnector {
     public shutDown() {
         try {
             this.node.stop()
-            console.log('Node stopped!')
+            logger.info('Node stopped!')
         } catch (error) {
-            console.error('Node failed to stop!', error)
+            logger.error('Node failed to stop!', error)
         }
     }
 }
 
 
-const ipfsConfig = {
-    repo: os.homedir() + '/.IPFSfeeder',
-    config: {
-      Addresses: {
-        Swarm: [
-          '/ip4/0.0.0.0/tcp/14012',
-          '/ip4/127.0.0.1/tcp/14013/ws'
-        ],
-        API: '/ip4/127.0.0.1/tcp/5012',
-        Gateway: '/ip4/127.0.0.1/tcp/9191'
-      }
-    },
-    ipld: {
-        formats: [ require('../IPLD/formats'), require('ipld-dag-pb')]
-    }
-}

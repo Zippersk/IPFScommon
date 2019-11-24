@@ -1,19 +1,15 @@
-'use strict'
-
-
-const CID = require('cids')
-const multicodec = require('multicodec')
-const multihashes = require('multihashes')
-const multihashing = require('multihashing-async')
-const transform = require('lodash.transform')
-const isCircular = require('is-circular')
-const json = require('fast-json-stable-stringify')
+import CID from 'cids'
+import multicodec from 'multicodec'
+import multihashes from 'multihashes'
+import transform from 'lodash.transform' 
+import isCircular from 'is-circular'
+import json from 'fast-json-stable-stringify'
 
 
 const CODEC = 297
 const DEFAULT_HASH_ALG = multicodec.DBL_SHA2_256
 
-let _serialize = obj => transform(obj, (result, value, key) => {
+let _serialize = (obj: any) => transform(obj, (result: any, value: any, key: string) => {
   if (CID.isCID(value)) {
     result[key] = { '/': value.toBaseEncodedString() }
   } else if (Buffer.isBuffer(value)) {
@@ -32,7 +28,7 @@ let _serialize = obj => transform(obj, (result, value, key) => {
  * @param {BitcoinBlock} dagNode - Internal representation of a Bitcoin block
  * @returns {Buffer}
  */
-const serialize = (obj) =>  {
+const serialize = (obj: any): Buffer =>  {
   if (isCircular(obj)) {
     throw new Error('Object contains circular references.')
   }
@@ -42,7 +38,7 @@ const serialize = (obj) =>  {
 }
 
 
-let _deserialize = obj => transform(obj, (result, value, key) => {
+let _deserialize = (obj: { value: any; }) => transform(obj, (result: any, value: any, key: string) => {
   if (typeof value === 'object' && value !== null) {
     if (value['/']) {
       if (typeof value['/'] === 'string') result[key] = new CID(value['/'])
@@ -63,7 +59,7 @@ let _deserialize = obj => transform(obj, (result, value, key) => {
  * @param {Buffer} binaryBlob - Binary representation of a Bitcoin block
  * @returns {BitcoinBlock}
  */
-const deserialize = (buffer) => {
+const deserialize = (buffer: Buffer) => {
   let obj = JSON.parse(buffer.toString())
   let deserializedObject = _deserialize({ value: obj }).value
 
@@ -81,20 +77,20 @@ const deserialize = (buffer) => {
  * @param {string} [UserOptions.hashAlg] - Defaults to the defaultHashAlg of the format
  * @returns {Promise.<CID>}
  */
-const cid = async (buffer) => {
+const cid = async (buffer: Buffer) => {
   let hash = JSON.parse(buffer.toString()).hash
   return hashToCid(hash)
 }
 
 
-const hashToCid = (hash) => {
+const hashToCid = (hash: string) => {
   const multihash = multihashes.encode(Buffer.from(hash), DEFAULT_HASH_ALG)
   const cidVersion = 1
   const codecName = 'dag-json'
   return new CID(cidVersion, codecName, multihash)
 }
 
-module.exports = {
+export default {
   hashToCid: hashToCid,
   codec: CODEC,
   defaultHashAlg: DEFAULT_HASH_ALG,
