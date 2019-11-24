@@ -1,5 +1,5 @@
-import CID from 'cids'
-import util from './util'
+import CID from "cids";
+import util from "./util";
 
 /**
  * Resolves a path within a Bitcoin block.
@@ -15,43 +15,43 @@ import util from './util'
  *   link, then the `remainderPath` is the part after the link that can be used
  *   for further resolving
  */
-const resolve = (binaryBlob, path) => {
-  let node = util.deserialize(binaryBlob)
+const resolve = (binaryBlob: Buffer, path: string): object => {
+  let node = util.deserialize(binaryBlob);
 
-  const parts = path.split('/').filter(Boolean)
+  const parts = path.split("/").filter(Boolean);
   while (parts.length) {
-    const key = parts.shift()
+    const key = parts.shift();
     if (node[key] === undefined) {
-      throw new Error(`Object has no property '${key}'`)
+      throw new Error(`Object has no property '${key}'`);
     }
 
-    node = node[key]
+    node = node[key];
     if (CID.isCID(node)) {
       return {
         value: node,
-        remainderPath: parts.join('/')
-      }
+        remainderPath: parts.join("/")
+      };
     }
   }
 
   return {
     value: node,
-    remainderPath: ''
-  }
-}
+    remainderPath: ""
+  };
+};
 
-const traverse = function * (node, path) {
+const traverse = function * (node: { [x: string]: any }, path: string): any {
   // Traverse only objects and arrays
-  if (Buffer.isBuffer(node) || CID.isCID(node) || typeof node === 'string' ||
+  if (Buffer.isBuffer(node) || CID.isCID(node) || typeof node === "string" ||
       node === null) {
-    return
+    return;
   }
   for (const item of Object.keys(node)) {
-    const nextpath = path === undefined ? item : path + '/' + item
-    yield nextpath
-    yield * traverse(node[item], nextpath)
+    const nextpath = path === undefined ? item : path + "/" + item;
+    yield nextpath;
+    yield * traverse(node[item], nextpath);
   }
-}
+};
 
 /**
  * Return all available paths of a block.
@@ -60,13 +60,13 @@ const traverse = function * (node, path) {
  * @param {Buffer} binaryBlob - Binary representation of a Bitcoin block
  * @yields {string} - A single path
  */
-const tree = function * (binaryBlob) {
-  const node = util.deserialize(binaryBlob)
+const tree = function * (binaryBlob: Buffer) {
+  const node = util.deserialize(binaryBlob);
 
-  yield * traverse(node, undefined)
-}
+  yield * traverse(node, undefined);
+};
 
 export default {
   traverse,
   tree
-}
+};

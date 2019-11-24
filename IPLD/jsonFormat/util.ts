@@ -1,25 +1,25 @@
-import CID from 'cids'
-import multicodec from 'multicodec'
-import multihashes from 'multihashes'
-import transform from 'lodash.transform' 
-import isCircular from 'is-circular'
-import json from 'fast-json-stable-stringify'
+import CID from "cids";
+import multicodec from "multicodec";
+import multihashes from "multihashes";
+import transform from "lodash.transform"; 
+import isCircular from "is-circular";
+import json from "fast-json-stable-stringify";
 
 
-const CODEC = 297
-const DEFAULT_HASH_ALG = multicodec.DBL_SHA2_256
+const CODEC = 297;
+const DEFAULT_HASH_ALG = multicodec.DBL_SHA2_256;
 
-let _serialize = (obj: any) => transform(obj, (result: any, value: any, key: string) => {
+const _serialize = (obj: any) => transform(obj, (result: any, value: any, key: string) => {
   if (CID.isCID(value)) {
-    result[key] = { '/': value.toBaseEncodedString() }
+    result[key] = { "/": value.toBaseEncodedString() };
   } else if (Buffer.isBuffer(value)) {
-    result[key] = { '/': { base64: value.toString('base64') } }
-  } else if (typeof value === 'object' && value !== null) {
-    result[key] = _serialize(value)
+    result[key] = { "/": { base64: value.toString("base64") } };
+  } else if (typeof value === "object" && value !== null) {
+    result[key] = _serialize(value);
   } else {
-    result[key] = value
+    result[key] = value;
   }
-})
+});
 
 
 /**
@@ -30,28 +30,28 @@ let _serialize = (obj: any) => transform(obj, (result: any, value: any, key: str
  */
 const serialize = (obj: any): Buffer =>  {
   if (isCircular(obj)) {
-    throw new Error('Object contains circular references.')
+    throw new Error("Object contains circular references.");
   }
 
-  let data = _serialize(obj)
-  return Buffer.from(json(data))
-}
+  const data = _serialize(obj);
+  return Buffer.from(json(data));
+};
 
 
-let _deserialize = (obj: { value: any; }) => transform(obj, (result: any, value: any, key: string) => {
-  if (typeof value === 'object' && value !== null) {
-    if (value['/']) {
-      if (typeof value['/'] === 'string') result[key] = new CID(value['/'])
-      else if (typeof value['/'] === 'object' && value['/'].base64) {
-        result[key] = Buffer.from(value['/'].base64, 'base64')
-      } else result[key] = _deserialize(value)
+const _deserialize = (obj: { value: any }) => transform(obj, (result: any, value: any, key: string) => {
+  if (typeof value === "object" && value !== null) {
+    if (value["/"]) {
+      if (typeof value["/"] === "string") result[key] = new CID(value["/"]);
+      else if (typeof value["/"] === "object" && value["/"].base64) {
+        result[key] = Buffer.from(value["/"].base64, "base64");
+      } else result[key] = _deserialize(value);
     } else {
-      result[key] = _deserialize(value)
+      result[key] = _deserialize(value);
     }
   } else {
-    result[key] = value
+    result[key] = value;
   }
-})
+});
 
 /**
  * Deserialize Bitcoin block into the internal representation.
@@ -60,13 +60,21 @@ let _deserialize = (obj: { value: any; }) => transform(obj, (result: any, value:
  * @returns {BitcoinBlock}
  */
 const deserialize = (buffer: Buffer) => {
-  let obj = JSON.parse(buffer.toString())
-  let deserializedObject = _deserialize({ value: obj }).value
+  const obj = JSON.parse(buffer.toString());
+  const deserializedObject = _deserialize({ value: obj }).value;
 
-  deserializedObject.toJSON = () => deserializedObject
+  deserializedObject.toJSON = () => deserializedObject;
 
-  return deserializedObject
-}
+  return deserializedObject;
+};
+
+
+const hashToCid = (hash: string) => {
+  const multihash = multihashes.encode(Buffer.from(hash), DEFAULT_HASH_ALG);
+  const cidVersion = 1;
+  const codecName = "dag-json";
+  return new CID(cidVersion, codecName, multihash);
+};
 
 /**
  * Calculate the CID of the binary blob.
@@ -78,17 +86,10 @@ const deserialize = (buffer: Buffer) => {
  * @returns {Promise.<CID>}
  */
 const cid = async (buffer: Buffer) => {
-  let hash = JSON.parse(buffer.toString()).hash
-  return hashToCid(hash)
-}
+  const hash = JSON.parse(buffer.toString()).hash;
+  return hashToCid(hash);
+};
 
-
-const hashToCid = (hash: string) => {
-  const multihash = multihashes.encode(Buffer.from(hash), DEFAULT_HASH_ALG)
-  const cidVersion = 1
-  const codecName = 'dag-json'
-  return new CID(cidVersion, codecName, multihash)
-}
 
 export default {
   hashToCid: hashToCid,
@@ -99,6 +100,6 @@ export default {
   cid: cid,
   deserialize: deserialize,
   serialize: serialize
-}
+};
 
-export {hashToCid}
+export {hashToCid};

@@ -1,5 +1,5 @@
-import * as resolver from './resolver.js';
-import utils from './util.js';
+import * as resolver from "./resolver.js";
+import utils from "./util.js";
 export = {
     resolver: resolver,
     util: utils,
