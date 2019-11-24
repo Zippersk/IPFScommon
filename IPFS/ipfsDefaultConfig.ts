@@ -1,21 +1,21 @@
 import os from "os";
 import fs from "fs";
-import path from "path"
+import path from "path";
 import Protector from "libp2p-pnet";
-import Libp2p from 'libp2p';
-import IPFS from 'ipfs';
-import TCP from 'libp2p-tcp';
-import MulticastDNS from 'libp2p-mdns';
-import WebSocketStar from 'libp2p-websocket-star';
-import Bootstrap from 'libp2p-bootstrap';
-import SPDY from 'libp2p-spdy';
-import KadDHT from 'libp2p-kad-dht';
-import MPLEX from 'pull-mplex';
-import SECIO from 'libp2p-secio';
+import Libp2p from "libp2p";
+import IPFS from "ipfs";
+import TCP from "libp2p-tcp";
+import MulticastDNS from "libp2p-mdns";
+import WebSocketStar from "libp2p-websocket-star";
+import Bootstrap from "libp2p-bootstrap";
+import SPDY from "libp2p-spdy";
+import KadDHT from "libp2p-kad-dht";
+import MPLEX from "pull-mplex";
+import SECIO from "libp2p-secio";
 
 const swarmKeyPath = path.resolve(__dirname, "../swarm.key");
 
-let tets = fs.existsSync(swarmKeyPath);
+const tets = fs.existsSync(swarmKeyPath);
 
 
 
@@ -27,14 +27,14 @@ let tets = fs.existsSync(swarmKeyPath);
  */
 const libp2pBundle = (opts) => {
   // Set convenience variables to clearly showcase some of the useful things that are available
-  const peerInfo = opts.peerInfo
-  const peerBook = opts.peerBook
-  const bootstrapList = opts.config.Bootstrap
+  const peerInfo = opts.peerInfo;
+  const peerBook = opts.peerBook;
+  const bootstrapList = opts.config.Bootstrap;
 
   // Create our WebSocketStar transport and give it our PeerId, straight from the ipfs node
   const wsstar = new WebSocketStar({
     id: peerInfo.id
-  })
+  });
 
   // Build and return our libp2p node
   return new Libp2p({
@@ -100,8 +100,8 @@ const libp2pBundle = (opts) => {
         enabled: true
       }
     }
-  })
-}
+  });
+};
 
 export default {
   repo: os.homedir() + "/.ipfs",

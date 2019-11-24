@@ -21,22 +21,22 @@ export default class IPFSconnector {
 
             setInterval(async () => {
                 try {
-                    const peers = await IPFSconnector.instance.node.swarm.peers()
-                    console.log(`The node now has ${peers.length} peers.`)
+                    const peers = await IPFSconnector.instance.node.swarm.peers();
+                    console.log(`The node now has ${peers.length} peers.`);
                 } catch (err) {
-                    console.log('An error occurred trying to check our peers:', err)
+                    console.log("An error occurred trying to check our peers:", err);
                 }
-            }, 2000)
+            }, 2000);
             
             // Log out the bandwidth stats every 4 seconds so we can see how our configuration is doing
             setInterval(async () => {
                 try {
-                    const stats = await IPFSconnector.instance.node.stats.bw()
-                    console.log(`\nBandwidth Stats: ${JSON.stringify(stats, null, 2)}\n`)
+                    const stats = await IPFSconnector.instance.node.stats.bw();
+                    console.log(`\nBandwidth Stats: ${JSON.stringify(stats, null, 2)}\n`);
                 } catch (err) {
-                    console.log('An error occurred trying to check our stats:', err)
+                    console.log("An error occurred trying to check our stats:", err);
                 }
-            }, 4000)
+            }, 4000);
         
 
         }
