@@ -117,7 +117,7 @@ export default {
     }
   },
   ipld: {
-      formats: [ require("../IPLD/jsonFormat"), require("ipld-dag-pb")] // TODO: rewrite as imports
+      formats: [ require("ipld-dag-cbor"), require("ipld-dag-pb")] // TODO: rewrite as imports
   },
   connectionManager: {
     minPeers: 1,

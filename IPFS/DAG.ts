@@ -1,5 +1,5 @@
 import IPFSconnector from "./IPFSConnector";
-import {hashToCid} from "../IPLD/jsonFormat/util";
+//import {hashToCid} from "../IPLD/jsonFormat/util";
 
 
 export default abstract class DAG {
@@ -10,15 +10,13 @@ export default abstract class DAG {
 
     public static async PutAsync(data: any) {
         const node = await DAG.getNodeAsync();
-        return await node.dag.put(data, {
-            format: 297,
-            hashAlg: "sha2-256"
-        });
+        const cid = await node.dag.put(data, { format: "dag-cbor", hashAlg: "sha3-512" });
+        return cid;
     }
 
     public static async GetAsync(hash: string, path: string) {
         const node = await DAG.getNodeAsync();
-        const CID = hashToCid(hash);
-        return await node.dag.get(CID);
+        const result = await node.dag.get(hash);
+        return result;
     }
 }
