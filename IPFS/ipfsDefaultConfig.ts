@@ -12,6 +12,7 @@ import SPDY from "libp2p-spdy";
 import KadDHT from "libp2p-kad-dht";
 import MPLEX from "pull-mplex";
 import SECIO from "libp2p-secio";
+import cbor from "../IPLD/customCbor";
 
 const swarmKeyPath = path.resolve(__dirname, "../swarm.key");
 
@@ -117,7 +118,7 @@ export default {
     }
   },
   ipld: {
-      formats: [ require("ipld-dag-cbor"), require("ipld-dag-pb")] // TODO: rewrite as imports
+      formats: [ cbor, require("ipld-dag-pb")]
   },
   connectionManager: {
     minPeers: 1,
