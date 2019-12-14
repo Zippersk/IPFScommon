@@ -4,6 +4,18 @@ import multihashing from "multihashing-async";
 import CID from "cids";
 import logger from "../logger";
 
+const customCbor = cbor
+
+const hashToCid = async (hash: string, userOptions) => {
+  logger.info("calculating cid for " + hash);
+  const defaultOptions = { cidVersion: 1, hashAlg: cbor.util.defaultHashAlg };
+  const options = Object.assign(defaultOptions, userOptions);
+  const multihash = await multihashing(Buffer.from(hash), options.hashAlg);
+  const codecName = multicodec.print[cbor.util.codec];
+  const cid = new CID(options.cidVersion, codecName, multihash);
+  return cid;
+};
+
 /**
  * Calculate the CID of the binary blob.
  *
@@ -13,16 +25,11 @@ import logger from "../logger";
  * @param {string} [UserOptions.hashAlg] - Defaults to the defaultHashAlg of the format
  * @returns {Promise.<CID>}
  */
-cbor.cid = async (binaryBlob, userOptions) => {
-    const defaultOptions = { cidVersion: 1, hashAlg: exports.defaultHashAlg };
-    const options = Object.assign(defaultOptions, userOptions);
-  
-    const multihash = await multihashing(binaryBlob, options.hashAlg);
-    const codecName = multicodec.print[exports.codec];
-    const cid = new CID(options.cidVersion, codecName, multihash);
-    logger.info("calculating CID");
+customCbor.util.cid = async (binaryBlob, userOptions) => {
+    const hash = cbor.util.deserialize(binaryBlob).hash
+    const cid = hashToCid(hash, userOptions);
     return cid;
   };
 
 
-export default cbor;
+export default customCbor;
