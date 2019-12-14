@@ -4,7 +4,7 @@ import multihashing from "multihashing-async";
 import CID from "cids";
 import logger from "../logger";
 
-const customCbor = cbor
+const customCbor = cbor;
 
 const hashToCid = async (hash: string, userOptions) => {
   logger.info("calculating cid for " + hash);
@@ -26,7 +26,7 @@ const hashToCid = async (hash: string, userOptions) => {
  * @returns {Promise.<CID>}
  */
 customCbor.util.cid = async (binaryBlob, userOptions) => {
-    const hash = cbor.util.deserialize(binaryBlob).hash
+    const hash = cbor.util.deserialize(binaryBlob).hash;
     const cid = hashToCid(hash, userOptions);
     return cid;
   };
