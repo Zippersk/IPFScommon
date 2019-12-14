@@ -5,13 +5,15 @@ import CID from "cids";
 import logger from "../logger";
 
 const customCbor = cbor;
+const codec = multicodec.DAG_CBOR
+const defaultHashAlg = multicodec.SHA2_256
 
 const hashToCid = async (hash: string, userOptions) => {
   logger.info("calculating cid for " + hash);
-  const defaultOptions = { cidVersion: 1, hashAlg: cbor.util.defaultHashAlg };
+  const defaultOptions = { cidVersion: 1, hashAlg: defaultHashAlg };
   const options = Object.assign(defaultOptions, userOptions);
   const multihash = await multihashing(Buffer.from(hash), options.hashAlg);
-  const codecName = multicodec.print[cbor.util.codec];
+  const codecName = multicodec.print[codec];
   const cid = new CID(options.cidVersion, codecName, multihash);
   return cid;
 };
