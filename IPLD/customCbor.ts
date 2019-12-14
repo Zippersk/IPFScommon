@@ -5,10 +5,10 @@ import CID from "cids";
 import logger from "../logger";
 
 const customCbor = cbor;
-const codec = multicodec.DAG_CBOR
-const defaultHashAlg = multicodec.SHA2_256
+const codec = multicodec.DAG_CBOR;
+const defaultHashAlg = multicodec.SHA2_256;
 
-const hashToCid = async (hash: string, userOptions) => {
+exports.hashToCid = async (hash: string, userOptions) => {
   logger.info("calculating cid for " + hash);
   const defaultOptions = { cidVersion: 1, hashAlg: defaultHashAlg };
   const options = Object.assign(defaultOptions, userOptions);
@@ -29,7 +29,7 @@ const hashToCid = async (hash: string, userOptions) => {
  */
 customCbor.util.cid = async (binaryBlob, userOptions) => {
     const hash = cbor.util.deserialize(binaryBlob).hash;
-    const cid = hashToCid(hash, userOptions);
+    const cid = await exports.hashToCid(hash, userOptions);
     return cid;
   };
 

@@ -1,5 +1,5 @@
 import IPFSconnector from "./IPFSConnector";
-import cbor from "../IPLD/customCbor";
+import {hashToCid} from "../IPLD/customCbor";
 
 
 export default abstract class DAG {
@@ -16,7 +16,8 @@ export default abstract class DAG {
 
     public static async GetByHashAsync(hash: string, path: string) {
         const node = await DAG.getNodeAsync();
-        const result = await node.dag.get(cbor.hashToCid(hash), path);
+        const cid = await hashToCid(hash);
+        const result = await node.dag.get(cid, path);
         return result;
     }
 }
