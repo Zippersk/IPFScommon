@@ -23,8 +23,7 @@ export default abstract class DAG {
         const node = await DAG.getNodeAsync();
 
         const index =  await this.Get("bafyriqdjesjircvsthtk4kavycqngapporlmopbel3ghb4hvkh3xqw2mixy3qva2b7246pnzddz2my4oivl5lkhq7zacmgsmq7bcobjlgd3ku", hash);
-
-        const result = await node.dag.get(index, path);
+        const result = await this.Get(index, path);
         return result.value;
     }
 }
