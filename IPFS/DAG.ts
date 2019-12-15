@@ -22,7 +22,7 @@ export default abstract class DAG {
     public static async GetByHashAsync(hash: string, path: string) {
         const node = await DAG.getNodeAsync();
 
-        const index =  await this.Get("bafyriqdjesjircvsthtk4kavycqngapporlmopbel3ghb4hvkh3xqw2mixy3qva2b7246pnzddz2my4oivl5lkhq7zacmgsmq7bcobjlgd3ku", hash);
+        const index =  await this.Get("bafyriqecmz35zju2eaa635yevqvmwptxqko4au7eaw2ksw7oeen2il3k2g7upvq3d2zypmmvgdlgn22wupixqzk3hea2keanwjlfpcwi3czak", hash);
         const result = await this.Get(index, path);
         return result.value;
     }
