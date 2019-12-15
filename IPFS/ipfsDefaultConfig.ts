@@ -12,7 +12,7 @@ import SPDY from "libp2p-spdy";
 import KadDHT from "libp2p-kad-dht";
 import MPLEX from "pull-mplex";
 import SECIO from "libp2p-secio";
-import cbor from "../IPLD/customCbor";
+import cbor from "ipld-dag-cbor";
 
 const swarmKeyPath = path.resolve(__dirname, "../swarm.key");
 

@@ -1,11 +1,10 @@
 import IPFSconnector from "./IPFSConnector";
-import cbor from "../IPLD/customCbor";
 
 
 export default abstract class DAG {
 
     private static async getNodeAsync() {
-        return (await IPFSconnector.getInstanceAsync()).getNode();
+        return (await IPFSconnector.getInstanceAsync()).node;
     }
 
     public static async PutAsync(data: any) {
@@ -14,9 +13,18 @@ export default abstract class DAG {
         return cid;
     }
 
+    public static async Get(cid: string, path: string) {
+        const node = await DAG.getNodeAsync();
+        const result = await node.dag.get(cid, path);
+        return result.value;
+    }
+
     public static async GetByHashAsync(hash: string, path: string) {
         const node = await DAG.getNodeAsync();
-        const result = await node.dag.get(cbor.hashToCid(hash), path);
-        return result;
+
+        const index =  await this.Get("bafyriqdjesjircvsthtk4kavycqngapporlmopbel3ghb4hvkh3xqw2mixy3qva2b7246pnzddz2my4oivl5lkhq7zacmgsmq7bcobjlgd3ku", hash);
+
+        const result = await node.dag.get(index, path);
+        return result.value;
     }
 }

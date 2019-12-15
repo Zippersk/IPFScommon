@@ -6,7 +6,7 @@ import IPFS from "ipfs";
 export default class IPFSconnector {
     private static instance: IPFSconnector;
     private static config: object = ipfsDefaultConfig;
-    private node: any;
+    private _node: any;
 
     static setConfig(config: object) {
         IPFSconnector.config = config;
@@ -16,7 +16,7 @@ export default class IPFSconnector {
         if (!IPFSconnector.instance) {
             IPFSconnector.instance = new IPFSconnector();
 
-            IPFSconnector.instance.node = await IPFS.create(IPFSconnector.config);
+            IPFSconnector.instance._node = await IPFS.create(IPFSconnector.config);
             logger.info("node started!");
 
             // setInterval(async () => {
@@ -43,13 +43,13 @@ export default class IPFSconnector {
         return IPFSconnector.instance;
     }
 
-    public getNode() {
-        return this.node;
+    get node(): any {
+        return this._node;
     }
 
     public shutDown() {
         try {
-            this.node.stop();
+            this._node.stop();
             logger.info("Node stopped!");
         } catch (error) {
             logger.error("Node failed to stop!", error);
