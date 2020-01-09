@@ -9,7 +9,7 @@ export default abstract class DAG {
 
     public static async PutAsync(data: any) {
         const node = await DAG.getNodeAsync();
-        const cid = await node.dag.put(data, { format: "dag-cbor", hashAlg: "sha3-512" });
+        const cid = await node.dag.put(data);
         return cid;
     }
 
@@ -17,11 +17,5 @@ export default abstract class DAG {
         const node = await DAG.getNodeAsync();
         const result = await node.dag.get(cid, path);
         return result.value;
-    }
-
-    public static async GetByHashAsync(hash: string, path: string) {
-        const index =  await this.Get("bafyriqecmz35zju2eaa635yevqvmwptxqko4au7eaw2ksw7oeen2il3k2g7upvq3d2zypmmvgdlgn22wupixqzk3hea2keanwjlfpcwi3czak", hash);
-        const result = await this.Get(index, path);
-        return result;
     }
 }

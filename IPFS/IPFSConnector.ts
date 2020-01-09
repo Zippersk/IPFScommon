@@ -2,6 +2,7 @@ import IPFStype from "typestub-ipfs";
 import ipfsDefaultConfig from "./ipfsDefaultConfig";
 import logger from "../logger";
 import IPFS from "ipfs";
+import RegisterIPFSCleanup from "./cleanup"
 
 export default class IPFSconnector {
     private static instance: IPFSconnector;
@@ -18,6 +19,7 @@ export default class IPFSconnector {
 
             IPFSconnector.instance._node = await IPFS.create(IPFSconnector.config);
             logger.info("node started!");
+            RegisterIPFSCleanup();
 
             // setInterval(async () => {
             //     try {
@@ -27,7 +29,7 @@ export default class IPFSconnector {
             //         console.log("An error occurred trying to check our peers:", err);
             //     }
             // }, 2000);
-            
+
             // // Log out the bandwidth stats every 4 seconds so we can see how our configuration is doing
             // setInterval(async () => {
             //     try {
@@ -37,7 +39,7 @@ export default class IPFSconnector {
             //         console.log("An error occurred trying to check our stats:", err);
             //     }
             // }, 4000);
-        
+
 
         }
         return IPFSconnector.instance;

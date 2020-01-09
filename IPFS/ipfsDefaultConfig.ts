@@ -16,8 +16,6 @@ import cbor from "ipld-dag-cbor";
 
 const swarmKeyPath = path.resolve(__dirname, "../swarm.key");
 
-const tets = fs.existsSync(swarmKeyPath);
-
 
 
 /**
@@ -106,6 +104,8 @@ const libp2pBundle = (opts) => {
 
 export default {
   repo: os.homedir() + "/.ipfs",
+  pass: "01234567890123456789",
+  preload: { enabled: false },
   config: {
     Addresses: {
       Swarm: [
@@ -118,7 +118,7 @@ export default {
     }
   },
   ipld: {
-      formats: [ cbor, require("ipld-dag-pb")]
+    formats: [cbor, require("ipld-dag-pb")]
   },
   connectionManager: {
     minPeers: 1,
